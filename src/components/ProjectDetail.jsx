@@ -52,9 +52,11 @@ export default function ProjectDetail() {
     <div className={styles.page}>
       <div className={styles.topBar}>
         <button className={styles.back} onClick={() => navigate('/')}>← Projects</button>
-        <a className={styles.extLink} href={project.link} target="_blank" rel="noopener">
-          View project ↗
-        </a>
+        {project.link && (
+          <a className={styles.extLink} href={project.link} target="_blank" rel="noopener">
+            View project ↗
+          </a>
+        )}
       </div>
 
       <div className={styles.content}>

@@ -1,0 +1,98 @@
+## Motivation
+
+Growing up, I switched between German and Russian constantly, with my parents, between rooms, sometimes mid-sentence. It felt completely natural. As an adult, I became more curious about my parents' immigration story and the broader question of how language and identity travel across borders together. That curiosity sent me down a rabbit hole into multilingualism research: specifically, what actually *triggers* a switch? Is it the topic? The person you're talking to? A word that simply doesn't exist in the other language?
+
+I came across the [Miami Bangor Corpus](http://bangortalk.org.uk/speakers.php?c=miami), a collection of naturalistic bilingual conversations recorded in Miami. I focused on the Miami subset, Spanish-English speakers, partly because Spanish-English code-switching is one of the most studied contact varieties in the world, and partly because the dataset is genuinely accessible and well-annotated. It made for a good anchor to ask a question I'd been sitting with for years.
+
+## Interactive Corpus Explorer
+
+<iframe
+  src="/code-switching-visualisation.html"
+  style={{ width: "100%", height: "620px", border: 'none' }}
+  title="Miami Corpus — Code-Switch Viewer"
+/>
+
+## Overview
+
+The goal was to identify the linguistic and contextual patterns that predict a language switch in natural conversation. When does a Spanish-English speaker reach for the other language — and can a model learn to anticipate that?
+
+I used Python to process the corpus transcripts, extracting turn-level features: word frequency, part of speech, speaker identity, conversational context. From there, I trained classifiers (sklearn for baselines, pytorch for sequence models) to predict switch points and explored what the models weighted most heavily.
+
+## Detail
+
+### The corpus
+
+The [Miami Bangor Corpus](http://bangortalk.org.uk/speakers.php?c=miami) contains 56 naturalistic conversations recorded in Miami with Spanish-English bilinguals — around 52,000 utterances and 212,000 tokens across four speaker families (Herring, Maria, Sastre, Zeledon). Crucially, the corpus annotates language choice at multiple levels of granularity. Whole utterances can be flagged as Spanish-headed (`[- spa]`), individual tokens within an utterance can be tagged with their language (`@s:spa`, `@s:eng`), and morphologically hybrid words — like *printear* (English *print* + Spanish -ear infinitive) or *faxeando* (English *fax* + Spanish gerund) — get their own compound tags. Every utterance also has an auto-generated part-of-speech gloss tier, giving token-level morphosyntactic features.
+
+One thing that stands out immediately: switching is not evenly distributed. Some conversations are almost entirely English; others flip languages on nearly every other turn. Zeledon8 and Sastre3, for instance, are Spanish-headed on around 37–40% of turns. This inter-speaker variability turned out to be important for modelling — it's not just *what* you're talking about that predicts a switch, it's *who* you are.
+
+### Two tasks
+
+I framed prediction as two separate classification problems:
+
+- **Token-level:** given a token, does the next token switch language? This is a highly localised prediction — it asks whether any individual word is a switch boundary.
+- **Utterance-level:** given the last token of an utterance, does the next utterance switch language? This is coarser but arguably more linguistically meaningful — it captures the full conversational turn as the unit of analysis.
+
+Both are heavily imbalanced. Token-level switches make up only 1.2% of the test set (867 switches out of 56,168 tokens). Utterance-level is more tractable at about 16% positive (1,897 out of 11,622 utterances). Train/test splits were done by conversation — all tokens from a given conversation go entirely to one side — to avoid data leakage across turns from the same speaker pair.
+
+![Class distribution across both test sets](/cs-class-balance.png)
+
+### Features
+
+Ten features went into the baseline classifiers:
+
+| Feature | Type | Description |
+|---|---|---|
+| `lang` | categorical | Language tag of the current token |
+| `utt_base_lang` | categorical | Base language of the current utterance |
+| `prev_lang` | categorical | Language tag of the previous token |
+| `prev_utt_lang` | categorical | Language of the previous utterance |
+| `pos` | categorical | Part-of-speech tag (from the `%aut` autoglosser tier) |
+| `position_in_utt` | numeric | Normalised position within the utterance (0–1) |
+| `utt_length` | numeric | Number of tokens in the utterance |
+| `is_utt_start` | boolean | Whether this is the first token in an utterance |
+| `is_utt_end` | boolean | Whether this is the last token in an utterance |
+| `speaker_changed` | boolean | Whether the speaker changed relative to the previous utterance |
+
+The baseline model was a `HistGradientBoostingClassifier` with `class_weight='balanced'` to handle the severe imbalance, trained for 400 iterations with a shallow depth (max 6) and a small learning rate.
+
+### Results
+
+**Token-level:** ROC-AUC of **0.872**. The classifier catches about 67% of actual switch points (recall = 0.675) but with very low precision (0.111) — for every real switch it finds, it raises around 8 false alarms. Given that switches are only 1.2% of tokens, this is expected behaviour for a balanced-weight model: it has been told to treat minority class errors as expensive, so it errs on the side of over-predicting. In raw numbers: 585 true positives, 282 missed switches (false negatives), 4,688 false alarms.
+
+![Token-level confusion matrix — counts and row-normalised recall](/cs-confusion-matrix-tok.png)
+
+**Utterance-level:** ROC-AUC of **0.792**, with precision 0.415 and recall 0.717. The higher positive rate (16%) makes the task more tractable — the model can be more confident when it does predict a switch, and false alarms cost less relative to the class size. 1,360 true positives, 537 missed, 1,915 false alarms.
+
+![Utterance-level confusion matrix — counts and row-normalised recall](/cs-confusion-matrix-utt.png)
+
+The gap between the two AUC scores (0.872 vs 0.792) partly reflects this base-rate difference. Token-level benefits from very strong local signal — if the current token is Spanish inside an English-base utterance, the next token very often switches back, a pattern the model can learn reliably. Utterance-level decisions are noisier because they depend on longer-range conversational dynamics.
+
+![ROC curves for both tasks](/cs-roc-curves.png)
+
+### What the model learned
+
+Permutation importance on the token-level test set reveals a clear hierarchy:
+
+| Feature | ΔAUC |
+|---|---|
+| Current token language | +0.182 |
+| Utterance base language | +0.134 |
+| Previous token language | +0.071 |
+| POS tag | +0.056 |
+| Previous utterance language | +0.034 |
+| Utterance length, position, speaker change | < 0.01 each |
+
+The dominance of language-tag features over structural ones is striking. The model is not primarily learning *where* in an utterance switches happen — it is learning the local language context around the switch point. A token in Spanish inside an English-base utterance is highly predictive of a switch back to English on the very next token, regardless of whether that token is at the start, middle, or end of the utterance. POS tag has a meaningful contribution too — certain categories (conjunctions, discourse markers, proper nouns) are more likely to occur at switch boundaries.
+
+What drops out as nearly irrelevant: whether the token is the first or last in the utterance, and utterance length. The structural position of a token carries almost no information once you condition on the surrounding language context.
+
+![Feature importances — permutation on test set](/cs-feature-importances.png)
+
+### Observations and limitations
+
+A notable complexity in the corpus is the `@s:eng&spa` class — 7,002 tokens that are phonologically identical in both languages (*no*, *ok*, *eh*, *um*). These were treated as a separate language state in the features, but they may function as transition buffers rather than clean switch points — a speaker saying *no* before flipping to English is doing something subtly different from a mid-sentence switch of a content word. Handling this ambiguity more carefully is probably worth exploring.
+
+The inter-speaker variability is a harder problem. The train/test split is conversation-level, so test conversations may come from speakers who switch at very different rates than the training conversations. A model that has never seen a near-monolingual English speaker might misfire heavily on their turns. Speaker or dyad-level priors — even just a single feature encoding estimated switch frequency — would likely help substantially.
+
+These baselines establish a reasonable ceiling for what local, token-level linguistic context can predict: an AUC around 0.87 for token switches and 0.79 for utterance switches. Whether sequence models (mBERT, or a simple LSTM over token sequences) can push beyond that by capturing longer-range patterns is the next question.
