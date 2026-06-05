@@ -33,3 +33,27 @@ The same approach works for the Subway. Its departures tell a different story, a
 ![Departures on Glasgow Subway](/glasgow-subway-departures.png)
 
 The goal was never to produce a report or a set of recommendations. It was just to make something you can look at and feel the shape of the network: where it's busy, where it goes quiet, how these services that don't officially belong to the same system are in fact all serving the same city. Glasgow's transit problem is partly political and partly infrastructural, but it's also a legibility problem. The network is hard to understand as a whole because no one has ever really had to present it as one. This is a small attempt at that.
+
+## Where can you actually get to?
+
+Departures show you when things leave. They don't tell you where those things can take you, which turns out to be a harder and more interesting question.
+
+I found myself thinking about this in terms of a specific scenario. You're somewhere in Glasgow, at a particular station, right now. You have thirty minutes. Where can you actually go? Not in theory, not if everything runs on time and you plan in advance, but given the services that exist and are running, where does the network actually reach from where you're standing?
+
+The answer, I suspected, was more than most people realise — and less connected than it should be.
+
+The reachability view lets you pick any Glasgow rail or subway stop and see every destination reachable within thirty minutes, based on real-time departure data. The dots on the map are coloured by how long it takes to get there: green for under ten minutes, amber for twenty, orange approaching the half-hour limit. The route lines show you the actual paths — not as the crow flies, but the geometry of the track.
+
+![Reachability from Belgrove — early results before route lines load](/partick-example.png)
+
+What surprised me when I started using this wasn't the destinations themselves but the shape of how they cluster. From most of the southern suburban stations, the thirty-minute radius extends surprisingly far east and north through the city centre, while whole neighbourhoods a short distance away remain completely out of reach. The network has a grain to it, and the reachability view makes that grain visible in a way that a static route map doesn't.
+
+![Reachability from a city centre station with route lines](/image.png)
+
+The more revealing discovery came from allowing transfers. A single transfer — changing from one service to another with at least five minutes to make the connection — opens up significantly more of the city. The suburban rail and the Subway operate as separate systems, with separate tickets and no formal integration, but they share physical space at a handful of stations. Partick is the most obvious: the rail station and the Subway entrance are a short walk apart, and a transfer there connects two networks that otherwise have no relationship to each other.
+
+![Transfer-inclusive results from Charing Cross, with route and leg detail](/including_transfers.png)
+
+When you see those transfer paths listed out — board here at 22:03, arrive there at 22:15, change platforms, continue on a different service — it becomes clear that the network is more navigable than it presents itself as being. The information exists. The connections are physically possible. What's missing is any official acknowledgement that they exist, any integrated ticketing that makes using them feel like a single journey rather than two separate ones you happened to stitch together.
+
+That gap between what the network can do and what it tells you it can do feels like the most honest summary of Glasgow transit I've found. The infrastructure is there. The legibility isn't.
