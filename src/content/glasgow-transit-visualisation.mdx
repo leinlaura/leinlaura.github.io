@@ -1,0 +1,35 @@
+{/* ─────────────────────────────────────────────────────────────────────────
+    GLASGOW TRANSIT — project write-up
+    
+    This file is standard Markdown. You can:
+      • Write prose with **bold**, *italic*, headers, lists
+      • Add images:  ![caption](/your-image.jpg)   ← drop files in public/
+      • Add code blocks with triple backticks
+      • Import and embed any React component (charts, maps, etc.)
+    ───────────────────────────────────────────────────────────────────────── */}
+
+I've lived in Glasgow for almost seven years. I still find myself surprised, on a fairly regular basis, by how difficult it is to get somewhere by public transit. Not because the services aren't there, but because the experience of using them feels like it was never really designed to be an experience at all. You check one app for the train, another for the bus, discover the tickets don't transfer between them, and end up walking a stretch you shouldn't have to walk. It's death by a thousand small inconveniences.
+
+Coming from Hamburg, where a single ticket covers the U-Bahn, S-Bahn, buses, and ferries as one integrated network, this took some getting used to. Hamburg isn't a special case either. Integrated ticketing is pretty standard across most of continental Europe. But standing on a Glasgow platform, looking at a map that only shows the little circle of the Subway and nothing else, it's hard not to feel like someone just decided the city wasn't worth the effort.
+
+![Hamburg's U and S-Bahn network](/hamburg-public-transit.png)
+
+![Glasgow Subway](/glasgow-subway.png)
+
+The thing is, Glasgow has a lot more to work with than the Subway map suggests. Outside of London, it has the largest suburban rail network in the UK. Lines threading out across the city and into the surrounding region, the Argyle and North Clyde lines running right through the city centre, an extensive bus network on top of all that. The raw infrastructure is not the problem. The problem is that none of it presents itself as a coherent whole. There's no map that shows all of it. No ticket that covers all of it. No moment where you can look at Glasgow and understand it as a city with a transit system, rather than a city with several transit-adjacent services that happen to overlap.
+
+I'm not the first person to notice this. Campaigns like [Get Glasgow Moving](https://www.getglasgowmoving.org/) have been making the political case for years. But I wanted to do something simpler and more concrete: just make it visible.
+
+## What I built
+
+The starting point was departures, which felt like the most tangible unit of a transit network. Not routes in the abstract, but actual trains leaving actual stations across the course of a day. I took Glasgow Central and Glasgow Queen Street, the two main rail hubs, and visualised their departures over time: which lines, how often, where the gaps are, how the rhythm of the network changes from morning rush to late evening.
+
+Data comes from [Transitland](https://www.transit.land/), an open platform that aggregates GTFS feeds from transit agencies worldwide. GTFS is the standard format agencies use to publish their schedules, and Transitland's API lets you query departures for a given stop across a time window, and separately pull the geographic coordinates of each route. That means the lines on the map follow the actual geometry of the track rather than a straight-line guess between stops.
+
+![Departures at Glasgow Central and Queen Street](/overview-departures-top-level.png)
+
+The same approach works for the Subway. Its departures tell a different story, a tighter and more predictable loop, and sitting alongside the suburban rail view the contrast starts to show you something about how Glasgow's network is actually structured, and where it isn't.
+
+![Departures on Glasgow Subway](/glasgow-subway-departures.png)
+
+The goal was never to produce a report or a set of recommendations. It was just to make something you can look at and feel the shape of the network: where it's busy, where it goes quiet, how these services that don't officially belong to the same system are in fact all serving the same city. Glasgow's transit problem is partly political and partly infrastructural, but it's also a legibility problem. The network is hard to understand as a whole because no one has ever really had to present it as one. This is a small attempt at that.

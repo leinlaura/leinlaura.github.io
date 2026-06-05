@@ -1,0 +1,39 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gap:     2px;   /* gap between panels — shows as grid lines */
+  --px:      32px;
+  --font:    "Space Mono", "Courier New", monospace;
+  --mono:    "Space Mono", "Courier New", monospace;
+  --display: "Bebas Neue", "Arial Narrow", Impact, sans-serif;
+
+  /* panel palette */
+  --navy:    #0D1829;
+  --wine:    #1C0D12;
+  --forest:  #0C1C10;
+  --ochre:   #1C180A;
+  --violet:  #14101E;
+  --teal:    #0A1818;
+  --coal:    #0F0F0F;
+  --ink:     #080808;  /* body bg — shows as grid line colour */
+
+  /* text */
+  --text:    #F2EFE9;
+  --dim:     #666;
+  --amber:   #FFE040;
+}
+
+html { font-size: 18px; scroll-behavior: smooth; }
+
+body {
+  background: var(--ink);
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a   { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+
+@media (max-width: 700px) { :root { --px: 18px; } }

@@ -1,0 +1,169 @@
+.label {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 14px var(--px);
+  font-size: 0.5875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+  border-bottom: 1px solid #1A1A1A;
+  margin-bottom: var(--gap);
+}
+
+.labelNum {
+  font-family: var(--mono);
+  font-size: 0.5rem;
+  color: var(--amber);
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+}
+
+.leader {
+  flex: 1;
+  border-bottom: 1px dotted #2A2A2A;
+  align-self: flex-end;
+  margin-bottom: 3px;
+}
+
+.count { font-family: var(--mono); color: var(--amber); flex-shrink: 0; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+}
+
+.cell {
+  background: var(--bg);
+  padding: var(--px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+  border: none;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  min-height: 220px;
+  position: relative;
+  transition: filter 0.15s;
+  border-top: 3px solid var(--border);
+}
+.cell:hover { filter: brightness(1.25); }
+
+.cellTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.cat {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.date {
+  font-size: 0.5875rem;
+  font-family: var(--mono);
+  color: var(--dim);
+}
+
+.cellTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  color: var(--text);
+  flex: 1;
+}
+
+.cellSummary {
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  color: var(--accent);
+  opacity: 0.75;
+}
+
+.cellArrow {
+  font-size: 1rem;
+  color: var(--accent);
+  opacity: 0.4;
+  align-self: flex-end;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.cell:hover .cellArrow { opacity: 1; transform: translate(3px, -3px); }
+
+/* Reader */
+.reader {
+  background: var(--bg);
+  padding: 52px var(--px);
+  border-top: 3px solid var(--accent);
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.5875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  background: none;
+  border: none;
+  padding: 0;
+  margin-bottom: 40px;
+  transition: color 0.12s;
+}
+.back:hover { color: var(--accent); }
+
+.readerMeta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.catBadge {
+  font-size: 0.5875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border: 1px solid;
+}
+
+.readerDate {
+  font-size: 0.625rem;
+  font-family: var(--mono);
+  color: var(--dim);
+}
+
+.readerTitle {
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--text);
+  max-width: 700px;
+  padding-bottom: 32px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid #1A1A1A;
+}
+
+.readerBody {
+  font-size: 1rem;
+  line-height: 1.9;
+  color: var(--accent);
+  opacity: 0.85;
+  max-width: 620px;
+}
+.readerBody p { margin-bottom: 1.5em; }
+
+@media (max-width: 700px) {
+  .grid { grid-template-columns: 1fr; }
+}

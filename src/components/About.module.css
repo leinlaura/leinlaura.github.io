@@ -1,0 +1,66 @@
+.label {
+  padding: 14px var(--px);
+  font-size: 0.5875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+  border-bottom: 1px solid #1A1A1A;
+  margin-bottom: var(--gap);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--gap);
+}
+
+.bioPanel {
+  background: var(--navy);
+  padding: 48px var(--px);
+}
+
+.linksPanel {
+  background: var(--forest);
+  padding: 48px var(--px);
+}
+
+.panelLabel {
+  font-size: 0.5875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #4A7A5A;
+  margin-bottom: 28px;
+}
+
+.linksPanel .panelLabel { color: #4A7A5A; }
+.bioPanel .panelLabel { color: #3A6A9A; }
+
+.bioText {
+  font-size: 1rem;
+  line-height: 1.85;
+  color: #9BAEC8;
+  max-width: 540px;
+}
+.bioText p { margin-bottom: 1.4em; }
+.bioText p:last-child { margin-bottom: 0; }
+
+.linkRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid #1A3A24;
+  font-size: 0.875rem;
+  color: #6BAF7E;
+  transition: color 0.12s;
+}
+.linkRow:last-child { border-bottom: none; }
+.linkRow:hover { color: var(--text); }
+
+.arrow { font-size: 0.875rem; }
+
+@media (max-width: 700px) {
+  .grid { grid-template-columns: 1fr; }
+}
